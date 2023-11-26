@@ -1,0 +1,1 @@
+export { ProtectedRouteWrapper } from "./ProtectedRouteWrapper";

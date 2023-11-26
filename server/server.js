@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
+const cors = require("cors");
 const LocalStrategy = require("passport-local").Strategy;
 
 // const User = require("./models/user");
@@ -36,11 +37,23 @@ const db = mongoose.connection;
 
 app.use(express.urlencoded({ extended: false }));
 app.use(
+  cors({
+    origin: ["http://127.0.0.1:5173", "http://localhost:8000"],
+    credentials: true,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    optionsSuccessStatus: 204, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  })
+);
+app.use(
   session({
     secret: "your secret key",
     resave: false,
     saveUninitialized: true,
     store: new MongoStore({ mongoUrl: db.client.s.url }),
+    cookie: { secure: false }, // Set secure to false if not using HTTPS
+    proxy: true, // Add this line if your app is behind a proxy
+    rolling: true, // Extend session on each request
+    credentials: true, // Include credentials in cross-origin requests
   })
 );
 
@@ -71,13 +84,27 @@ app.post("/register", function (req, res) {
 app.post(
   "/login",
   passport.authenticate("local", {
-    failureRedirect: "/login-failure",
     successRedirect: "/login-success",
-  }),
-  (err, req, res, next) => {
-    if (err) next(err);
-  }
+    failureRedirect: "/login-failure",
+  })
 );
+
+// app.post(
+//   "/login",
+//   passport.authenticate("local", {
+//     session: true,
+//     failureRedirect: "/login-failure",
+//     successRedirect: "/login-success",
+//   })
+//   // passport.authenticate("local", {
+//   //   session: true,
+//   //   failureRedirect: "/login-failure",
+//   //   successRedirect: "/login-success",
+//   // }),
+//   // (err, req, res, next) => {
+//   //   if (err) next(err);
+//   // }
+// );
 
 app.get("/login-failure", (req, res, next) => {
   console.log(req.session);
@@ -86,6 +113,7 @@ app.get("/login-failure", (req, res, next) => {
 
 app.get("/login-success", (req, res, next) => {
   console.log(req.session);
+  console.log("after login isAuthenticated: ", req.isAuthenticated());
   res.send("Login Attempt was successful.");
 });
 
@@ -108,6 +136,17 @@ app.get("/logout", (req, res) => {
     // Redirect to the home page or any other page after logout
     res.json({ message: "Logged out" });
   });
+});
+
+app.get("/check-session", (req, res) => {
+  console.log(req.isAuthenticated());
+  if (req.isAuthenticated()) {
+    // return res.status(200).json({ authenticated: true, user: req.user });
+    res.json({ authenticated: true, user: req.user });
+  } else {
+    res.json({ authenticated: false, user: null });
+    // return res.status(401).json({ authenticated: false, user: null });
+  }
 });
 
 app.listen(8000, () => {
