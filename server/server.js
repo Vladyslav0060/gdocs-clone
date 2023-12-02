@@ -1,5 +1,10 @@
+const express = require("express");
+const cors = require("cors");
 const mongoose = require("mongoose");
 const Document = require("./schemas/Document");
+const userRoutes = require("./routes/users");
+const authRoutes = require("./routes/auth");
+const { verifyToken } = require("./middlewares/middleware");
 require("dotenv").config();
 
 const dbUser = process.env.DB_USER;
@@ -47,3 +52,29 @@ async function findOrCreateDocument(id) {
   if (document) return document;
   return await Document.create({ _id: id, data: defaultValue });
 }
+
+const app = express();
+const PORT = 5000;
+
+app.use(express.json());
+app.use(express.urlencoded());
+app.use(cors());
+
+//routes
+
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+
+app.post("/api/userstest", (req, res) => {
+  console.log(req.body);
+  res.sendStatus(200);
+});
+
+app.get("/", (req, res) => {
+  res.status(200);
+  res.send("Welcome to root URL of Server");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
