@@ -4,9 +4,20 @@
   box-sizing: border-box;
 }
 
+html,
 body {
-  background-color: #f3f3f3;
+  height: 100%;
   margin: 0;
+  padding: 0;
+  background-color: #f3f3f3;
+}
+
+#root {
+  height: 100vh;
+}
+.App {
+  height: 100%;
+  // padding: 0 64px;
 }
 
 .container {
@@ -41,6 +52,8 @@ body {
 
 @page {
   margin: 1in;
+  border: none;
+  outline: none;
 }
 
 @media print {
