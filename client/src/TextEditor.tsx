@@ -42,7 +42,7 @@ export default function TextEditor() {
       quill.setContents(document);
       quill.enable();
     });
-    socket.emit("get-document", documentId);
+    socket.emit("get-document", documentId, localStorage.getItem("token"));
   }, [socket, quill, documentId]);
 
   useEffect(() => {

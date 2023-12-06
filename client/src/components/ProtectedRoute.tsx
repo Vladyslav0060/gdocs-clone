@@ -1,5 +1,5 @@
 import { useEffect, ReactNode } from "react";
-import { useJwt, decodeToken } from "react-jwt";
+import { useJwt } from "react-jwt";
 import { useNavigate } from "react-router-dom";
 
 interface PrivateRouteProps {

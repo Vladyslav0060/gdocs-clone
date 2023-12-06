@@ -1,0 +1,13 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  &__form {
+    width: 50%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+  }
+}
