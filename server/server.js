@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const Document = require("./schemas/Document");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
-const { verifyToken } = require("./middlewares/middleware");
+const docsRoutes = require("./routes/documents");
+const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const dbUser = process.env.DB_USER;
@@ -28,8 +29,8 @@ const io = require("socket.io")(3001, {
 });
 
 io.on("connection", (socket) => {
-  socket.on("get-document", async (documentId) => {
-    const document = await findOrCreateDocument(documentId);
+  socket.on("get-document", async (documentId, token) => {
+    const document = await findOrCreateDocument(documentId, token);
     socket.join(documentId);
     socket.emit("load-document", document.data);
     socket.on("send-changes", (delta) => {
@@ -45,12 +46,19 @@ io.on("connection", (socket) => {
 
 const defaultValue = "";
 
-async function findOrCreateDocument(id) {
+async function findOrCreateDocument(id, token) {
   if (id == null) return;
-
+  console.log(token);
+  const user = jwt.decode(token);
+  console.log(user);
   const document = await Document.findById(id);
   if (document) return document;
-  return await Document.create({ _id: id, data: defaultValue });
+  return await Document.create({
+    _id: id,
+    name: "Test name",
+    creator_id: user._id,
+    data: defaultValue,
+  });
 }
 
 const app = express();
@@ -64,6 +72,7 @@ app.use(cors());
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/documents", docsRoutes);
 
 app.post("/api/userstest", (req, res) => {
   console.log(req.body);
