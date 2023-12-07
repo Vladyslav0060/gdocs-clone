@@ -9,7 +9,8 @@ interface PrivateRouteProps {
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const token = localStorage.getItem("token") || "";
   const navigate = useNavigate();
-  const { isExpired } = useJwt(token);
+  const { isExpired, decodedToken } = useJwt(token);
+  console.log(decodedToken);
   useEffect(() => {
     if (isExpired) {
       navigate("/login");

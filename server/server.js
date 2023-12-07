@@ -38,7 +38,11 @@ io.on("connection", (socket) => {
       console.log(delta);
     });
     socket.on("save-document", async (data) => {
-      await Document.findByIdAndUpdate(documentId, { data });
+      console.log(data, Date.now().toString());
+      await Document.findByIdAndUpdate(documentId, {
+        data,
+        updated_at: Date.now().toString(),
+      });
     });
   });
   console.log("connected");
@@ -47,6 +51,7 @@ io.on("connection", (socket) => {
 const defaultValue = "";
 
 async function findOrCreateDocument(id, token) {
+  console.log({ id });
   if (id == null) return;
   console.log(token);
   const user = jwt.decode(token);

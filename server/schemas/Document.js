@@ -6,6 +6,8 @@ const DocumentSchema = new Schema(
     creator_id: String,
     name: String,
     data: Object,
+    created_at: { type: Date, default: Date.now },
+    updated_at: { type: Date, default: Date.now },
   },
   { collection: "gdocs-documents" }
 );

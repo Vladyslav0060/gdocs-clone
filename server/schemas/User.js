@@ -14,9 +14,13 @@ const UserSchema = new Schema(
 );
 
 UserSchema.methods.generateAuthToken = function () {
-  const token = jwt.sign({ _id: this._id }, process.env.JWT_PRIVATE_KEY, {
-    expiresIn: "7d",
-  });
+  const token = jwt.sign(
+    { _id: this._id, firstName: this.firstName },
+    process.env.JWT_PRIVATE_KEY,
+    {
+      expiresIn: "7d",
+    }
+  );
   return token;
 };
 
