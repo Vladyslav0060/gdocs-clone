@@ -9,7 +9,6 @@ import { SignUpPage } from "./pages/SignUpPage";
 import { LoginPage } from "./pages/LoginPage";
 import PrivateRoute from "./components/ProtectedRoute";
 import { DocumentsListPage } from "./pages/DocumentsListPage";
-import { Header } from "./components/Header";
 import { Mainpage } from "./pages/MainPage";
 function App() {
   const router = createBrowserRouter([
