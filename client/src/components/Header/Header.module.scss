@@ -1,10 +1,12 @@
 .root {
   &__drawer {
     ul {
+      height: 100%;
       width: 350px;
       li {
+        color: white;
         &:hover {
-          background-color: #f5f5f5;
+          background-color: rgb(1, 97, 214);
         }
         cursor: pointer;
       }
