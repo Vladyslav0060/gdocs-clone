@@ -4,6 +4,7 @@ import "quill/dist/quill.snow.css";
 import { useCallback, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import { useParams } from "react-router-dom";
+// import { Header } from "../../components/Header";
 
 type WrapperRefCallback = (
   wrapper: HTMLDivElement | null
@@ -23,11 +24,11 @@ const TOOLBAR_OPTIONS: any = [
   ["clean"],
 ];
 
-export default function TextEditor() {
+export default function DocumentEditorPage() {
   const { id: documentId } = useParams<{ id: string }>();
   const [socket, setSocket] = useState<Socket | null>(null);
   const [quill, setQuill] = useState<QuillEditor>(null);
-
+  // const [docName, setDocName] = useState<string>("");
   useEffect(() => {
     const s = io("http://localhost:3001");
     setSocket(s);
@@ -39,7 +40,8 @@ export default function TextEditor() {
   useEffect(() => {
     if (socket == null || quill == null) return;
     socket.once("load-document", (document: any) => {
-      quill.setContents(document);
+      // setDocName(document.name);
+      quill.setContents(document.data);
       quill.enable();
     });
     socket.emit("get-document", documentId, localStorage.getItem("token"));
@@ -74,7 +76,7 @@ export default function TextEditor() {
     if (socket == null || quill == null) return;
     const handler: any = (
       delta: DeltaOperation,
-      oldDelta: DeltaOperation,
+      _oldDelta: DeltaOperation,
       source: Sources
     ) => {
       if (source !== "user") return;
@@ -109,8 +111,11 @@ export default function TextEditor() {
   }, []);
 
   return (
-    <div className="container" ref={wrapperRef}>
-      TextEditor
-    </div>
+    <>
+      {/* <Header title={`Document | ${docName}`} /> */}
+      <div className="container" ref={wrapperRef}>
+        TextEditor
+      </div>
+    </>
   );
 }
