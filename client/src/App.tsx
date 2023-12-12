@@ -1,4 +1,3 @@
-import TextEditor from "./TextEditor";
 import {
   Navigate,
   createBrowserRouter,
@@ -10,15 +9,12 @@ import { LoginPage } from "./pages/LoginPage";
 import PrivateRoute from "./components/ProtectedRoute";
 import { DocumentsListPage } from "./pages/DocumentsListPage";
 import { Mainpage } from "./pages/MainPage";
+import DocumentEditorPage from "./pages/DocumentEditorPage/DocumentEditorPage";
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: (
-        <PrivateRoute>
-          <Mainpage />
-        </PrivateRoute>
-      ),
+      element: <Mainpage />,
     },
     {
       path: "/documents",
@@ -40,7 +36,7 @@ function App() {
       path: "/documents/:id",
       element: (
         <PrivateRoute>
-          <TextEditor />
+          <DocumentEditorPage />
         </PrivateRoute>
       ),
     },
